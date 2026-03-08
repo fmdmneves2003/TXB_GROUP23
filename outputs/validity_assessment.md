@@ -7,7 +7,7 @@
 - **Sample:** 1,163 visitors — 349 control (`pre`), 814 treatment
 - **Duration:** Feb 22 – Mar 6, 2026
 - **Primary KPI:** `kpi_y` (CTA click rate) — significant negative effect (p = 0.044)
-- **Secondary KPI:** `kpi_x` (enrollment-readiness score) — negative direction, not significant (p = 0.105)
+- **Secondary KPI:** `enrolled` (event enrollment rate) — negative direction, not significant
 
 ---
 
@@ -41,13 +41,13 @@ The power analysis (`02_power_analysis.ipynb`) revealed that the experiment is u
 | KPI | Required n per group | Actual control | Actual treatment |
 |-----|---------------------|----------------|-----------------|
 | `kpi_y` (detect +3.1 pp) | ~1,308 | 349 | 814 |
-| `kpi_x` (detect +4 points) | ~776 | 349 | 814 |
+| `enrolled` (detect +2.4 pp) | ~673 | 349 | 814 |
 
 **Implications:**
 
 - The experiment has a high risk of **false negatives** (Type II error) — it may fail to detect a real positive effect.
 - The significant negative result on `kpi_y` (p = 0.044) is informative despite low power: finding significance when underpowered means the true effect is likely real rather than a false positive.
-- The non-significant result on `kpi_x` (p = 0.105) is harder to interpret: it could reflect either no real effect or a real negative effect that the experiment lacks the power to confirm.
+- The non-significant result on `enrolled` is harder to interpret: it could reflect either no real effect or a real negative effect that the experiment lacks the power to confirm (baseline enrollment is very low at ~2.6%).
 
 ### 4. Multiple Hypothesis Testing
 
@@ -56,7 +56,7 @@ Five metrics are tested simultaneously without a correction procedure (e.g., Bon
 | Metric | p-value | Significant at 5%? | Survives Bonferroni (1%)? |
 |--------|---------|--------------------|-----------------------------|
 | `kpi_y` | 0.044 | Yes | No (borderline) |
-| `kpi_x` | 0.105 | No | No |
+| `enrolled` | — | No | No |
 | `exit_rate` | 0.0003 | Yes | Yes |
 | `scroll_depth_pct` | 0.029 | Yes | No |
 | `page_load_time_ms` | 0.010 | Yes | No (borderline) |
@@ -125,7 +125,7 @@ With a 70/30 split and day-level variation in both traffic volume and metric lev
 |--------|----------|----------|------------|
 | SRM (if 50/50 intended) | Internal | **High** | Partially — passes for 70/30, unconfirmed |
 | SUTVA violation | Internal | Low | Not testable |
-| Lack of power | Internal | **High** | Acknowledged; limits kpi_x interpretation |
+| Lack of power | Internal | **High** | Acknowledged; limits `enrolled` interpretation |
 | Multiple testing | Internal | Medium | Not corrected; primary KPI borderline |
 | Novelty effects | External | Medium | Not tested (no time-trend analysis) |
 | Primacy effects | External | Medium | Not tested |
@@ -139,10 +139,10 @@ With a 70/30 split and day-level variation in both traffic volume and metric lev
 
 1. The most critical validity threat is the **unconfirmed allocation ratio**. If the intended split was 50/50 rather than 70/30, internal validity is fundamentally compromised.
 
-2. The experiment is **underpowered**, which limits the ability to detect positive effects and makes the non-significant result on `kpi_x` inconclusive. However, the significant negative finding on `kpi_y` remains informative.
+2. The experiment is **underpowered**, which limits the ability to detect positive effects and makes the non-significant result on `enrolled` inconclusive. However, the significant negative finding on `kpi_y` remains informative.
 
 3. **Novelty and primacy effects** are plausible given the short test duration. A longer or repeated experiment would help rule these out.
 
 4. **No segmented analysis** was performed. The overall negative ATE could mask heterogeneous effects across visitor subgroups.
 
-5. Despite these limitations, the **convergence of negative signals** across multiple metrics (kpi_y, kpi_x, exit_rate, scroll_depth) and across multiple methods (difference-in-means, OLS, date-FE OLS) strengthens the overall conclusion that the treatment button performed worse than the original.
+5. Despite these limitations, the **convergence of negative signals** across multiple metrics (`kpi_y`, `enrolled`, `exit_rate`, `scroll_depth`) and across multiple methods (difference-in-means, OLS, date-FE OLS) strengthens the overall conclusion that the treatment button performed worse than the original.
